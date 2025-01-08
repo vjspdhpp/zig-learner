@@ -1,0 +1,9 @@
+{
+    "zig.zls.debugLog": true,
+    "zig.zls.enableAutofix": true,
+    "zig.zls.highlightGlobalVarDeclarations": true,
+    "zig.zls.trace.server": "messages",
+    "zig.zls.warnStyle": true,
+    "zig.zls.enableSnippets": true,
+    "zig.zls.path": "F:\\github\\zls\\zig-out\\bin\\zls.exe"
+}
