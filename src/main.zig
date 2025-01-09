@@ -13,7 +13,8 @@ pub fn main() !void {
     // try advanced_type_vector1();
     // try advanced_type_vector2();
     // try advanced_type_vector3();
-    advanced_type_pointer();
+    // advanced_type_pointer();
+    advanced_type_slice();
 }
 
 fn hello_world() !void {
@@ -196,6 +197,26 @@ fn advanced_type_pointer() void {
     const slice: []u8 = array1[1..3];
     print("{}\n", .{slice.len});
     _ = printf("Hello, world!!");
+}
+
+fn advanced_type_slice() void {
+    var array = [_]i32{ 1, 2, 3, 4 };
+    const len: usize = 3;
+    const slice: []i32 = array[0..len];
+    for (slice, 0..) |ele, index| {
+        _ = printf("#%d:%d\n", index + 1, ele);
+    }
+    print("type of slice is {}\n", .{@TypeOf(slice)});
+    const slice_2: []i32 = array[0..array.len];
+    print("type of slice2 is {}\n", .{@TypeOf(slice_2)});
+    print("@TypeOf(&slice[0])={}\n", .{@TypeOf(&slice[0])});
+
+    const str_slice: [:0]const u8 = "hello";
+    print("type of str_slice :{}\n", .{@TypeOf(str_slice)});
+    var arr = [_]u8{ 3, 2, 1, 0, 1, 2, 3, 0 };
+    const runtime_length: usize = 3;
+    const slice_3: [:0]u8 = arr[0..runtime_length :0];
+    print("type of slice_3 :{}\n", .{@TypeOf(slice_3)});
 }
 
 pub fn make(x: i32) i32 {
