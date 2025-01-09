@@ -16,7 +16,8 @@ pub fn main() !void {
     // try advanced_type_vector3();
     // advanced_type_pointer();
     // advanced_type_slice();
-    advanced_type_str();
+    // advanced_type_str();
+    advanced_type_struct();
 }
 
 fn hello_world() !void {
@@ -252,4 +253,43 @@ fn funnyPrint(msg: []const u8) void {
 
 pub fn make(x: i32) i32 {
     return x + 1;
+}
+
+const Circle = struct {
+    radius: u8,
+    const PI: f16 = 3.14;
+    pub fn init(radius: u8) Circle {
+        return Circle{ .radius = radius };
+    }
+    pub fn area(self: *Circle) f16 {
+        return @as(f16, @floatFromInt(self.radius * self.radius)) * PI;
+    }
+};
+
+fn advanced_type_struct() void {
+    const Tuple = struct { u8, u8 };
+    _ = Tuple; // autofix
+    const radius: u8 = 5;
+    var circle = Circle.init(radius);
+    print("area is {}", .{circle.area()});
+    const values = .{ @as(u32, 1234), @as(f64, 12.34), true, "hi" };
+    const hi = values.@"3";
+    _ = hi; // autofix
+    const Foo = struct {};
+    print("variable: {s}\n", .{@typeName(Foo)});
+    print("anonymous: {s}\n", .{@typeName(struct {})});
+    print("function: {s}\n", .{@typeName(LinkedList(i32))});
+}
+
+fn LinkedList(comptime T: type) type {
+    return struct {
+        pub const Node = struct {
+            prev: ?*Node,
+            next: ?*Node,
+            data: T,
+        };
+        first: ?*Node,
+        last: ?*Node,
+        len: usize,
+    };
 }
