@@ -1,5 +1,6 @@
 const std = @import("std");
 const print = std.debug.print;
+const mem = @import("std").mem;
 
 pub fn main() !void {
     // try hello_world();
@@ -14,7 +15,8 @@ pub fn main() !void {
     // try advanced_type_vector2();
     // try advanced_type_vector3();
     // advanced_type_pointer();
-    advanced_type_slice();
+    // advanced_type_slice();
+    advanced_type_str();
 }
 
 fn hello_world() !void {
@@ -217,6 +219,35 @@ fn advanced_type_slice() void {
     const runtime_length: usize = 3;
     const slice_3: [:0]u8 = arr[0..runtime_length :0];
     print("type of slice_3 :{}\n", .{@TypeOf(slice_3)});
+}
+
+fn advanced_type_str() void {
+    const bytes = "hello";
+    print("{}\n", .{@TypeOf(bytes)});
+    print("{d}\n", .{bytes.len});
+    print("{c}\n", .{bytes[0]});
+    print("{d}\n", .{bytes[5]});
+    print("{}\n", .{'e' == '\x65'});
+    print("{d}\n", .{'\u{1f4a9}'});
+    print("{d}\n", .{'💯'});
+    print("{u}\n", .{'⚡'});
+    print("{}\n", .{mem.eql(u8, "hello", "h\x65llo")});
+    print("{}\n", .{mem.eql(u8, "💯", "\xf0\x9f\x92\xaf")}); // true
+    const invalid_utf8 = "\xff\xfe";
+    print("0x{x}\n", .{invalid_utf8[1]});
+    print("0x{x}\n", .{"💯"[1]});
+    funnyPrint("asdasd");
+    const message_1 = "hello";
+    _ = message_1; // autofix
+    const message_2 = [_]u8{ 'h', 'e', 'l', 'l', 'o' };
+    _ = message_2; // autofix
+    const message_3: []const u8 = &.{ 'h', 'e', 'l', 'l', 'o' };
+    _ = message_3; // autofix
+
+}
+
+fn funnyPrint(msg: []const u8) void {
+    print("funnyPrint {s}\n", .{msg});
 }
 
 pub fn make(x: i32) i32 {
