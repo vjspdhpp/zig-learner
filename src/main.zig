@@ -2,17 +2,18 @@ const std = @import("std");
 const print = std.debug.print;
 
 pub fn main() !void {
-    try hello_world();
-    variables();
-    try basic_variable_type();
-    const closure = closure_fn(1);
-    const three = closure(4);
-    std.debug.print("closure(3)={}\n", .{three});
-    _ = addFortyTwo(1);
-    advance_type();
-    try advanced_type_vector1();
-    try advanced_type_vector2();
-    try advanced_type_vector3();
+    // try hello_world();
+    // variables();
+    // try basic_variable_type();
+    // const closure = closure_fn(1);
+    // const three = closure(4);
+    // std.debug.print("closure(3)={}\n", .{three});
+    // _ = addFortyTwo(1);
+    // advance_type();
+    // try advanced_type_vector1();
+    // try advanced_type_vector2();
+    // try advanced_type_vector3();
+    advanced_type_pointer();
 }
 
 fn hello_world() !void {
@@ -178,6 +179,25 @@ fn advanced_type_vector3() !void {
     const c = @select(i32, pred, a, b);
     print("c is {any}\n", .{c});
 }
+pub extern "c" fn printf(format: [*:0]const u8, ...) c_int;
+
+fn advanced_type_pointer() void {
+    var integer: i16 = 666;
+    const ptr = &integer;
+    ptr.* = ptr.* + 1;
+    print("{}\n", .{integer});
+    const array = [_]i32{ 1, 2, 3, 4 };
+    const ptrs: [*]const i32 = &array;
+    print("{}\n", .{ptrs[0]});
+    var array1: [5]u8 = "hello".*;
+    const array_poniter = &array1;
+    print("{}\n", .{array_poniter.len});
+
+    const slice: []u8 = array1[1..3];
+    print("{}\n", .{slice.len});
+    _ = printf("Hello, world!!");
+}
+
 pub fn make(x: i32) i32 {
     return x + 1;
 }
