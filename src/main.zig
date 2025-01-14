@@ -17,7 +17,8 @@ pub fn main() !void {
     // advanced_type_pointer();
     // advanced_type_slice();
     // advanced_type_str();
-    advanced_type_struct();
+    // advanced_type_struct();
+    advanced_type_enum();
 }
 
 fn hello_world() !void {
@@ -292,4 +293,85 @@ fn LinkedList(comptime T: type) type {
         last: ?*Node,
         len: usize,
     };
+}
+
+const Type = enum {
+    ok,
+    not_ok,
+};
+
+const Value = enum(u2) {
+    zero,
+    one,
+    two,
+};
+const Value2 = enum(u32) {
+    hundred = 100,
+    thousand = 1000,
+    million = 1000000,
+};
+const Value3 = enum(u4) {
+    a,
+    b = 8,
+    c,
+    d = 4,
+    e,
+};
+
+const Suit = enum {
+    clubs,
+    spades,
+    diamonds,
+    hearts,
+
+    pub fn isClubs(self: Suit) bool {
+        return self == Suit.clubs;
+    }
+};
+const Color = enum {
+    auto,
+    off,
+    on,
+};
+
+const Color2 = enum(u4) {
+    red,
+    green,
+    blue,
+    _,
+};
+
+const Number = enum(u8) {
+    one,
+    two,
+    three,
+    _,
+};
+
+fn advanced_type_enum() void {
+    const c = Type.ok;
+    print("c is {}\n", .{c});
+    const color1: Color = .auto;
+    const color2 = Color.auto;
+    print("color1==color2?{}\n", .{color1 == color2});
+    const number = Number.one;
+    const result = switch (number) {
+        .one => true,
+        .two, .three => false,
+        _ => false,
+    };
+    print("number is one? {}\n", .{result});
+    const is_one = switch (number) {
+        .one => true,
+        else => false,
+    };
+    print("number is_one? {}\n", .{is_one});
+
+    const blue: Color2 = @enumFromInt(2);
+    print("blue == .blue = {}\n", .{blue == .blue});
+
+    // 未列出的枚举值：8 在 u4 的范围内（0~15）
+    const yellow: Color2 = @enumFromInt(8);
+    print("@TypeOf(yellow)={}\n", .{@TypeOf(yellow)});
+    print("@intFromEnum(yellow)={d}\n", .{@intFromEnum(yellow)});
 }
