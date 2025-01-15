@@ -417,5 +417,20 @@ fn advanced_type_union() void {
     print("@tagName(Small2.a) = {s}\n", .{name});
 
     const i: Small2 = .{ .a = 1 };
-    print("i = {s}\n", .{i});
+    print("i = {}\n", .{i});
+
+    const val: ?u32 = null;
+    if (val) |real_b| {
+        _ = real_b;
+        print("||\n", .{});
+    } else {
+        print("else\n", .{});
+    }
+    var cc: ?u32 = 3;
+    if (cc) |*real_c| {
+        real_c.* = 1;
+        print("real_c {?}\n", .{cc});
+    } else {
+        print("else\n", .{});
+    }
 }
