@@ -18,7 +18,8 @@ pub fn main() !void {
     // advanced_type_slice();
     // advanced_type_str();
     // advanced_type_struct();
-    advanced_type_enum();
+    // advanced_type_enum();
+    advanced_type_union();
 }
 
 fn hello_world() !void {
@@ -374,4 +375,47 @@ fn advanced_type_enum() void {
     const yellow: Color2 = @enumFromInt(8);
     print("@TypeOf(yellow)={}\n", .{@TypeOf(yellow)});
     print("@intFromEnum(yellow)={d}\n", .{@intFromEnum(yellow)});
+}
+
+pub const Payload = union {
+    int: i64,
+    float: f64,
+    boolean: bool,
+};
+const ComplexTypeTag = enum {
+    ok,
+    not_ok,
+};
+const ComplexType = union(ComplexTypeTag) {
+    ok: u8,
+    not_ok: void,
+};
+const Small2 = union(enum) { a: i32, b: bool, c: u8 };
+
+fn advanced_type_union() void {
+    var payload = Payload{ .int = 1234 };
+    payload = Payload{ .float = 9 };
+    print("{}\n", .{payload.float});
+    const payload1: Payload = @unionInit(Payload, "int", 1);
+    print("{}\n", .{payload1.int});
+    var c = ComplexType{ .ok = 42 };
+    print("@as(ComplexTypeTag,c)==ComplexTypeTag.ok {}\n", .{@as(ComplexTypeTag, c) == ComplexTypeTag.ok});
+    switch (c) {
+        ComplexTypeTag.ok => |value| print("value==42 {}\n", .{value == 42}),
+        ComplexTypeTag.not_ok => unreachable,
+    }
+    print("std.meta.Tag(ComplexType)==ComplexTypeTag {}\n", .{std.meta.Tag(ComplexType) == ComplexTypeTag});
+    switch (c) {
+        ComplexTypeTag.ok => |*value| {
+            value.* = 1;
+            print("value==1 {}\n", .{value.* == 1});
+        },
+        ComplexTypeTag.not_ok => unreachable,
+    }
+    print("std.meta.Tag(ComplexType)==ComplexTypeTag {}\n", .{std.meta.Tag(ComplexType) == ComplexTypeTag});
+    const name = @tagName(Small2.a);
+    print("@tagName(Small2.a) = {s}\n", .{name});
+
+    const i: Small2 = .{ .a = 1 };
+    print("i = {s}\n", .{i});
 }
