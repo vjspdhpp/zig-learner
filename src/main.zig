@@ -21,7 +21,8 @@ pub fn main() !void {
     // advanced_type_enum();
     // advanced_type_union();
     // process_control_loop();
-    process_control_switch();
+    // process_control_switch();
+    process_control_defer_unreadchable();
 }
 
 fn hello_world() !void {
@@ -598,5 +599,23 @@ fn getNum(u: U) u32 {
             }
             return num;
         },
+    }
+}
+
+fn process_control_defer_unreadchable() void {
+    defer print("exe third\n", .{});
+    if (false) {
+        defer print("will not exec\n", .{});
+    }
+    defer {
+        print("exec second\n", .{});
+    }
+    defer {
+        print("exec first\n", .{});
+    }
+    const x = 1;
+    const y = 2;
+    if (x + y != 3) {
+        unreachable;
     }
 }
