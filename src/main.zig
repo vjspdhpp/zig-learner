@@ -20,7 +20,8 @@ pub fn main() !void {
     // advanced_type_struct();
     // advanced_type_enum();
     // advanced_type_union();
-    process_control_loop();
+    // process_control_loop();
+    process_control_switch();
 }
 
 fn hello_world() !void {
@@ -530,4 +531,72 @@ fn eventuallyNullSequence() ?u32 {
         numbers_left -= 1;
         break :blk numbers_left;
     };
+}
+
+fn process_control_switch() void {
+    const num = 8;
+    switch (num) {
+        5 => {
+            print("this is 5\n", .{});
+        },
+        else => {
+            print("this is not 5\n", .{});
+        },
+    }
+    const a: u64 = 10;
+    const zz: u64 = 103;
+    const b = switch (a) {
+        1, 2, 3 => 0,
+        5...100 => 1,
+        101 => blk: {
+            const c: u64 = 5;
+            break :blk c * 2 + 1;
+        },
+        zz => zz,
+        blk: {
+            const d: u32 = 5;
+            const e: u32 = 100;
+            break :blk d + e;
+        } => 107,
+        else => 9,
+    };
+    print("b is {}\n", .{b});
+    var aa = Item{ .c = Point{ .x = 1, .y = 2 } };
+    const bb = switch (aa) {
+        Item.a, Item.e => |item| item,
+        Item.c => |*item| blk: {
+            item.*.x += 1;
+            break :blk 6;
+        },
+        Item.d => 8,
+    };
+    print("bb is {any}, aa is {any}\n", .{ bb, aa });
+}
+
+const Point = struct {
+    x: u8,
+    y: u8,
+};
+
+const Item = union(enum) {
+    a: u32,
+    c: Point,
+    d,
+    e: u32,
+};
+
+const U = union(enum) {
+    a: u32,
+    b: f32,
+};
+
+fn getNum(u: U) u32 {
+    switch (u) {
+        inline else => |num, tag| {
+            if (tag == .b) {
+                return @intFromFloat(num);
+            }
+            return num;
+        },
+    }
 }
