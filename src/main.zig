@@ -19,7 +19,8 @@ pub fn main() !void {
     // advanced_type_str();
     // advanced_type_struct();
     // advanced_type_enum();
-    advanced_type_union();
+    // advanced_type_union();
+    process_control_loop();
 }
 
 fn hello_world() !void {
@@ -433,4 +434,100 @@ fn advanced_type_union() void {
     } else {
         print("else\n", .{});
     }
+}
+
+fn process_control_loop() void {
+    var items = [_]i32{ 3, 4, 5, 6, 7, 8 };
+    var sum: i32 = 0;
+    for (items) |value| {
+        sum += value;
+    }
+    for (&items) |*value| {
+        value.* += 1;
+    }
+    for (0..5) |i| {
+        _ = i;
+    }
+    for (items, 0..) |value, i| {
+        _ = value;
+        _ = i;
+    }
+    const items2 = [_]usize{ 3, 4, 5, 6, 7, 8 };
+    for (items, items2) |i, j| {
+        _ = i;
+        _ = j;
+    }
+
+    const result = for (items) |value| {
+        if (value == 5) {
+            break value;
+        }
+    } else 0;
+    _ = result; // autofix
+    var sum2: usize = 0;
+    inline for (items2) |i| {
+        const T = switch (i) {
+            2 => f32,
+            6 => i8,
+            8 => bool,
+            else => i3,
+        };
+        print("typeNameLength(T): {}\n", .{typeNameLength(T)});
+
+        sum2 += typeNameLength(T);
+    }
+    print("sum: {}\n", .{sum2});
+
+    var i: usize = 0;
+    while (i < 10) {
+        if (i == 5) {
+            break;
+        }
+        print("i is {}\n", .{i});
+        i += 1;
+    }
+    while (i < 10) : (i += 1) {}
+
+    outer: while (i < 100) : (i += 1) {
+        while (true) {
+            continue :outer;
+        }
+    }
+    comptime var k = 0;
+    inline while (k < 3) : (k += 1) {
+        const T = switch (k) {
+            0 => f32,
+            1 => i8,
+            2 => bool,
+            else => i5,
+        };
+        sum2 += typeNameLength(T);
+    }
+    numbers_left = 3;
+    while (eventuallyNullSequence()) |value| {
+        sum2 += value;
+    } else {
+        print("meet a null\n", .{});
+    }
+}
+
+fn typeNameLength(comptime T: type) usize {
+    return @typeName(T).len;
+}
+
+fn rangeHasNumber(begin: usize, end: usize, number: usize) bool {
+    var i = begin;
+    return while (i < end) : (i += 1) {
+        if (i == number) {
+            break true;
+        }
+    } else false;
+}
+
+var numbers_left: u32 = undefined;
+fn eventuallyNullSequence() ?u32 {
+    return if (numbers_left == 0) null else blk: {
+        numbers_left -= 1;
+        break :blk numbers_left;
+    };
 }
